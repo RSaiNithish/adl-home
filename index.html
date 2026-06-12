@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Data Labs | Alt-Data Alpha Certification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #06080d;
+      --bg-card: rgba(12, 18, 30, 0.7);
+      --bg-glass: rgba(15, 23, 42, 0.6);
+      --border: rgba(99, 179, 237, 0.08);
+      --border-hover: rgba(99, 179, 237, 0.2);
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --accent3: #a78bfa;
+      --green: #34d399;
+      --red: #f87171;
+      --orange: #fb923c;
+      --glow: 0 0 40px rgba(56, 189, 248, 0.15);
+      --glow-strong: 0 0 80px rgba(56, 189, 248, 0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ============ BACKGROUND ============ */
+    .bg-grid {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(56, 189, 248, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    }
+    .bg-watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background: url('logo.png') center / contain no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(0.5px);
+    }
+
+    /* ============ NAV ============ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(6, 8, 13, 0.5);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.06);
+      transition: all 0.3s;
+    }
+    nav.scrolled {
+      padding: 0.8rem 3rem;
+      background: rgba(6, 8, 13, 0.8);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-logo-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .nav-logo-text {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      padding: 0.55rem 1.3rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg) !important;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--glow);
+    }
+
+    /* ============ HERO ============ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      z-index: 1;
+    }
+    .hero-content { max-width: 900px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-dim);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 0.85rem 2rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg);
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-strong);
+    }
+    .btn-secondary {
+      padding: 0.85rem 2rem;
+      background: var(--bg-glass);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-hover);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    /* ============ HERO FLOATING CARDS ============ */
+    .hero-visuals {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .float-card {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 14px;
+      padding: 0.8rem 1rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      font-size: 0.65rem;
+      animation: float 8s ease-in-out infinite;
+      min-width: 120px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .float-card:nth-child(1) { top: 12%; left: 4%; animation-delay: 0s; }
+    .float-card:nth-child(2) { top: 12%; right: 4%; animation-delay: -2s; }
+    .float-card:nth-child(3) { bottom: 28%; left: 5%; animation-delay: -4s; }
+    .float-card:nth-child(4) { bottom: 28%; right: 5%; animation-delay: -6s; }
+    .fc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .fc-label { color: var(--text-muted); font-weight: 500; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .fc-badge {
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.55rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .fc-badge.pass { background: rgba(52, 211, 153, 0.12); color: var(--green); }
+    .fc-badge.live { background: rgba(56, 189, 248, 0.12); color: var(--accent); }
+    .fc-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1.1;
+    }
+    .fc-value.green { color: var(--green); }
+    .fc-value.accent { color: var(--accent); }
+    .fc-value.orange { color: var(--orange); }
+    .fc-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .fc-sparkline {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      margin-top: 0.4rem;
+    }
+    .fc-sparkline .bar {
+      flex: 1;
+      border-radius: 2px;
+      min-width: 3px;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ============ SECTION COMMON ============ */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 2rem;
+    }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      line-height: 1.15;
+    }
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ============ PIPELINE ============ */
+    .pipeline-section {
+      background: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.02) 50%, transparent 100%);
+    }
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-top: 4rem;
+      flex-wrap: wrap;
+    }
+    .pipeline-node {
+      position: relative;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 16px;
+      padding: 2rem 1.8rem;
+      text-align: center;
+      min-width: 200px;
+      flex: 1;
+      max-width: 240px;
+      transition: all 0.4s;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .pipeline-node:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--glow);
+    }
+    .pipeline-node .node-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      position: relative;
+    }
+    .pipeline-node .node-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+    .pipeline-node .node-icon::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+    .pipeline-node:hover .node-icon::after { opacity: 0.3; }
+    .node-icon.upload { background: rgba(56, 189, 248, 0.12); color: var(--accent); }
+    .node-icon.sera { background: rgba(129, 140, 248, 0.12); color: var(--accent2); }
+    .node-icon.alpha { background: rgba(167, 139, 250, 0.12); color: var(--accent3); }
+    .node-icon.proof { background: rgba(52, 211, 153, 0.12); color: var(--green); }
+    .node-icon.report { background: rgba(251, 146, 60, 0.12); color: var(--orange); }
+    .pipeline-node h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .pipeline-node p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .pipeline-arrow {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+    }
+
+    /* ============ FEATURES GRID ============ */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .feature-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.4s;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--glow);
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ============ PROOF EVIDENCE ============ */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .evidence-item {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .evidence-item:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .evidence-item .ev-icon {
+      margin-bottom: 0.7rem;
+      color: var(--accent);
+    }
+    .evidence-item .ev-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .evidence-item h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .evidence-item p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* ============ VERDICT ============ */
+    .verdict-section {
+      text-align: center;
+    }
+    .verdict-cards {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 4rem;
+      flex-wrap: wrap;
+    }
+    .verdict-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      min-width: 280px;
+      max-width: 340px;
+      flex: 1;
+      transition: all 0.4s;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .verdict-card:hover {
+      transform: translateY(-4px);
+    }
+    .verdict-card.pass {
+      border-color: rgba(52, 211, 153, 0.2);
+    }
+    .verdict-card.pass:hover {
+      box-shadow: 0 0 60px rgba(52, 211, 153, 0.15);
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+    .verdict-card.fail {
+      border-color: rgba(248, 113, 113, 0.15);
+    }
+    .verdict-card.fail:hover {
+      box-shadow: 0 0 60px rgba(248, 113, 113, 0.1);
+      border-color: rgba(248, 113, 113, 0.3);
+    }
+    .verdict-card.inconclusive {
+      border-color: rgba(251, 146, 60, 0.15);
+    }
+    .verdict-card.inconclusive:hover {
+      box-shadow: 0 0 60px rgba(251, 146, 60, 0.1);
+      border-color: rgba(251, 146, 60, 0.3);
+    }
+    .verdict-card .v-icon {
+      margin-bottom: 1rem;
+    }
+    .verdict-card .v-icon svg {
+      width: 36px;
+      height: 36px;
+    }
+    .verdict-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .verdict-card p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ============ PRICING ============ */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .pricing-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      transition: all 0.4s;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: relative;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .pricing-card.featured {
+      border-color: rgba(56, 189, 248, 0.3);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.05));
+    }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--glow);
+    }
+    .pricing-card .price-badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg);
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .pricing-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .pricing-card .price {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+    .pricing-card .price-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .pricing-card ul {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    .pricing-card li {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      padding: 0.4rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pricing-card li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* ============ COMPETITIVE ============ */
+    .competitive-table {
+      margin-top: 3rem;
+      overflow-x: auto;
+    }
+    .competitive-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .competitive-table th, .competitive-table td {
+      padding: 1rem 1.2rem;
+      text-align: left;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .competitive-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+    }
+    .competitive-table tr:hover td {
+      background: rgba(56, 189, 248, 0.03);
+    }
+    .competitive-table .highlight {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ============ TESTIMONIAL / QUOTE ============ */
+    .quote-section {
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+    .quote-section blockquote {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 300;
+      font-style: italic;
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .quote-section blockquote em {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .quote-section cite {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-style: normal;
+    }
+
+    /* ============ CTA ============ */
+    .cta-section {
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ============ FOOTER ============ */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-inner p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    /* ============ COMING SOON BANNER ============ */
+    .coming-soon {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.7rem;
+      background: rgba(251, 146, 60, 0.1);
+      border: 1px solid rgba(251, 146, 60, 0.2);
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ============ TERMINAL / TYPING ============ */
+    .terminal-window {
+      background: rgba(12, 18, 30, 0.5);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 12px;
+      max-width: 700px;
+      margin: 3rem auto 0;
+      overflow: hidden;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1rem;
+      background: rgba(30, 41, 59, 0.3);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.06);
+    }
+    .terminal-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .terminal-dot.r { background: #f87171; }
+    .terminal-dot.y { background: #fbbf24; }
+    .terminal-dot.g { background: #34d399; }
+    .terminal-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: 0.5rem;
+    }
+    .terminal-body {
+      padding: 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+    }
+    .terminal-body .prompt { color: var(--accent); }
+    .terminal-body .cmd { color: var(--text); }
+    .terminal-body .output { color: var(--text-muted); }
+    .terminal-body .success { color: var(--green); }
+    .terminal-body .warning { color: var(--orange); }
+
+    /* ============ ANIMATIONS ============ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ============ GLOW LINE ============ */
+    .glow-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+      opacity: 0.3;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 3rem; }
+      .pipeline-flow { flex-direction: column; gap: 0; }
+      .pipeline-arrow { transform: rotate(90deg); }
+      .pipeline-node { max-width: 100%; min-width: auto; }
+      section { padding: 4rem 1.5rem; }
+      .float-card { display: none; }
+    }
+
+    /* ============ SCROLLBAR ============ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+    /* ============ COUNTER ANIMATION ============ */
+    .stats-row {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      margin-top: 4rem;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ============ MODULE STATUS ============ */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .module-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: all 0.3s;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .module-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .module-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+    .module-status .s-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .module-status.building .s-dot { background: var(--accent); }
+    .module-status.building { color: var(--accent); }
+    .module-status.coming .s-dot { background: var(--orange); }
+    .module-status.coming { color: var(--orange); }
+    .module-status.planned .s-dot { background: var(--text-muted); }
+    .module-status.planned { color: var(--text-muted); }
+    .module-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .module-card p {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-watermark"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">
+      <img src="logo.png" alt="All Data Labs" class="nav-logo-img">
+      <span class="nav-logo-text">All Data Labs</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#pipeline">How It Works</a></li>
+      <li><a href="#proof">Proof</a></li>
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#cta" class="nav-cta">Get Certified</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-visuals">
+      <div class="float-card">
+        <div class="fc-header">
+          <span class="fc-label">Information Coefficient</span>
+          <span class="fc-badge pass">Pass</span>
+        </div>
+        <div class="fc-value green">0.082</div>
+        <div class="fc-sub">Rank IC, cross-sectional</div>
+        <div class="fc-sparkline">
+          <div class="bar" style="height:40%; background:var(--green); opacity:0.4"></div>
+          <div class="bar" style="height:55%; background:var(--green); opacity:0.5"></div>
+          <div class="bar" style="height:35%; background:var(--green); opacity:0.4"></div>
+          <div class="bar" style="height:70%; background:var(--green); opacity:0.6"></div>
+          <div class="bar" style="height:60%; background:var(--green); opacity:0.5"></div>
+          <div class="bar" style="height:80%; background:var(--green); opacity:0.7"></div>
+          <div class="bar" style="height:75%; background:var(--green); opacity:0.6"></div>
+          <div class="bar" style="height:90%; background:var(--green); opacity:0.8"></div>
+          <div class="bar" style="height:85%; background:var(--green); opacity:0.9"></div>
+          <div class="bar" style="height:95%; background:var(--green); opacity:1"></div>
+        </div>
+      </div>
+      <div class="float-card">
+        <div class="fc-header">
+          <span class="fc-label">Quintile Spread</span>
+          <span class="fc-badge live">Live</span>
+        </div>
+        <div class="fc-value accent">+14.3%</div>
+        <div class="fc-sub">Q1 to Q5 annualized</div>
+        <div class="fc-sparkline">
+          <div class="bar" style="height:30%; background:var(--accent); opacity:0.3"></div>
+          <div class="bar" style="height:45%; background:var(--accent); opacity:0.4"></div>
+          <div class="bar" style="height:50%; background:var(--accent); opacity:0.5"></div>
+          <div class="bar" style="height:55%; background:var(--accent); opacity:0.5"></div>
+          <div class="bar" style="height:65%; background:var(--accent); opacity:0.6"></div>
+          <div class="bar" style="height:60%; background:var(--accent); opacity:0.6"></div>
+          <div class="bar" style="height:75%; background:var(--accent); opacity:0.7"></div>
+          <div class="bar" style="height:80%; background:var(--accent); opacity:0.8"></div>
+          <div class="bar" style="height:90%; background:var(--accent); opacity:0.9"></div>
+          <div class="bar" style="height:100%; background:var(--accent); opacity:1"></div>
+        </div>
+      </div>
+      <div class="float-card">
+        <div class="fc-header">
+          <span class="fc-label">OOS Sharpe</span>
+          <span class="fc-badge pass">Pass</span>
+        </div>
+        <div class="fc-value green">1.87</div>
+        <div class="fc-sub">Walk-forward, 5 folds</div>
+        <div class="fc-sparkline">
+          <div class="bar" style="height:50%; background:var(--green); opacity:0.4"></div>
+          <div class="bar" style="height:65%; background:var(--green); opacity:0.5"></div>
+          <div class="bar" style="height:45%; background:var(--green); opacity:0.4"></div>
+          <div class="bar" style="height:80%; background:var(--green); opacity:0.7"></div>
+          <div class="bar" style="height:70%; background:var(--green); opacity:0.6"></div>
+        </div>
+      </div>
+      <div class="float-card">
+        <div class="fc-header">
+          <span class="fc-label">DSR</span>
+          <span class="fc-badge pass">Pass</span>
+        </div>
+        <div class="fc-value green">4.2</div>
+        <div class="fc-sub">p < 0.01, trial adjusted</div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Building in public
+      </div>
+      <h1>
+        <span class="gradient-text">Alpha, certified.</span><br>
+        Certification for alt data.
+      </h1>
+      <p>
+        Upload your alt-data. Get a statistically validated report with reproducible proof, or an honest rejection.
+      </p>
+      <div class="hero-buttons">
+        <a href="#cta" class="btn-primary">Request Early Access</a>
+        <a href="#pipeline" class="btn-secondary">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TERMINAL -->
+  <div class="terminal-window reveal">
+    <div class="terminal-header">
+      <div class="terminal-dot r"></div>
+      <div class="terminal-dot y"></div>
+      <div class="terminal-dot g"></div>
+      <span class="terminal-title">alldata certification pipeline</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">alldata certify -dataset foot_traffic_q4.csv</span></div>
+      <div class="output">→ Resolving entities... 847 rows mapped (94.2% coverage)</div>
+      <div class="output">→ Generating investment thesis... 3 candidates</div>
+      <div class="output">→ Feature engineering... 12 transforms, 0 leakage detected</div>
+      <div class="output">→ Running panel backtest... IC: 0.082, Sharpe: 1.87</div>
+      <div class="output">→ Validation gates: <span class="success">5/5 passed</span></div>
+      <div class="output">→ Trial-adjusted significance: <span class="success">DSR 4.2 (p < 0.01)</span></div>
+      <div><span class="success">✓ CERTIFIED</span> Alpha Potential Report generated</div>
+    </div>
+  </div>
+
+  <!-- PIPELINE -->
+  <section id="pipeline" class="pipeline-section">
+    <div class="section-inner">
+      <div class="section-label reveal">Pipeline</div>
+      <h2 class="section-title reveal">From raw data to certified proof</h2>
+      <p class="section-desc reveal">
+        Upload your alt-data CSV. Our platform handles entity resolution, automated research, statistical validation, and delivers an institutional-grade report.
+      </p>
+
+      <div class="pipeline-flow">
+        <div class="pipeline-node reveal reveal-delay-1">
+          <div class="node-icon upload"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <h3>Upload</h3>
+          <p>Raw CSV with entity names, dates, and values</p>
+        </div>
+        <div class="pipeline-arrow reveal reveal-delay-2">→</div>
+        <div class="pipeline-node reveal reveal-delay-2">
+          <div class="node-icon sera"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <h3>SERA</h3>
+          <p>Entity resolution strings → org → ticker (PIT)</p>
+        </div>
+        <div class="pipeline-arrow reveal reveal-delay-3">→</div>
+        <div class="pipeline-node reveal reveal-delay-3">
+          <div class="node-icon alpha"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <h3>ALPHA</h3>
+          <p>Research engine thesis → features → models → backtest</p>
+        </div>
+        <div class="pipeline-arrow reveal reveal-delay-4">→</div>
+        <div class="pipeline-node reveal reveal-delay-4">
+          <div class="node-icon proof"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Proof</h3>
+          <p>Statistical gates DSR, PBO, null benchmarks</p>
+        </div>
+        <div class="pipeline-arrow reveal reveal-delay-4">→</div>
+        <div class="pipeline-node reveal reveal-delay-4">
+          <div class="node-icon report"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+          <h3>Report</h3>
+          <p>Alpha Potential Report PDF + certification verdict</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- PROOF -->
+  <section id="proof">
+    <div class="section-inner">
+      <div class="section-label reveal">Proof</div>
+      <h2 class="section-title reveal">Not a Sharpe ratio. A structured evidence package.</h2>
+      <p class="section-desc reveal">
+        Every certification comes with reproducible statistical proof. No cherry-picking, no selective reporting.
+      </p>
+
+      <div class="evidence-grid">
+        <div class="evidence-item reveal reveal-delay-1">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <h4>Information Coefficient</h4>
+          <p>Signal correlates with forward returns cross-sectional, point-in-time</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-1">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <h4>Quintile Spread</h4>
+          <p>Monotonic long-short cross-sectional spread across signal buckets</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-2">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <h4>OOS Distribution</h4>
+          <p>CPCV / walk-forward not one lucky path, the full out-of-sample picture</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-2">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h4>Decay Analysis</h4>
+          <p>Signal half-life usable at daily, weekly, or monthly rebalance</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-3">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <h4>Universe Coverage</h4>
+          <p>% of tickers and dates with usable signal sparsity map included</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-3">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h4>Capacity Estimate</h4>
+          <p>Rough AUM before alpha degrades realistic trading assumptions</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-4">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <h4>Null Benchmark</h4>
+          <p>Beats random signals at same frequency not noise dressed up as signal</p>
+        </div>
+        <div class="evidence-item reveal reveal-delay-4">
+          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h4>Trial-Adjusted Significance</h4>
+          <p>DSR / PBO after honest hypothesis count accounts for everything you tried</p>
+        </div>
+      </div>
+
+      <div class="verdict-cards" style="margin-top: 4rem;">
+        <div class="verdict-card pass reveal reveal-delay-1">
+          <div class="v-icon"><svg width="32" height="32" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <h3>Certified</h3>
+          <p>Passed all statistical gates. Report issued with full evidence package.</p>
+        </div>
+        <div class="verdict-card inconclusive reveal reveal-delay-2">
+          <div class="v-icon"><svg width="32" height="32" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <h3>Inconclusive</h3>
+          <p>Mixed signals. Partial evidence not enough for certification, not enough to reject.</p>
+        </div>
+        <div class="verdict-card fail reveal reveal-delay-3">
+          <div class="v-icon"><svg width="32" height="32" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <h3>Not Certified</h3>
+          <p>Failed gates but the report explains why. Honest rejections build trust.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- MODULES -->
+  <section id="modules">
+    <div class="section-inner">
+      <div class="section-label reveal">Platform</div>
+      <h2 class="section-title reveal">Four layers. One mission.</h2>
+      <p class="section-desc reveal">
+        Agents explore. Engine proves. Gates decide.
+      </p>
+
+      <div class="module-grid">
+        <div class="module-card reveal reveal-delay-1">
+          <div class="module-status coming"><span class="s-dot"></span> Coming Soon</div>
+          <h3>Platform</h3>
+          <p>Upload, cert run orchestration, billing, and delivery dashboard.</p>
+        </div>
+        <div class="module-card reveal reveal-delay-2">
+          <div class="module-status building"><span class="s-dot"></span> In Progress</div>
+          <h3>SERA</h3>
+          <p>Entity resolution messy strings → org → ticker. Point-in-time mapping with audit trail.</p>
+        </div>
+        <div class="module-card reveal reveal-delay-3">
+          <div class="module-status coming"><span class="s-dot"></span> Next</div>
+          <h3>ALPHA</h3>
+          <p>Research engine. Dataset understanding → investment theses → feature engineering → models → backtest.</p>
+        </div>
+        <div class="module-card reveal reveal-delay-4">
+          <div class="module-status planned"><span class="s-dot"></span> Planned</div>
+          <h3>Proof</h3>
+          <p>Validation gates, null benchmarks, DSR/PBO, trial registry, and the Alpha Potential Report.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- QUOTE -->
+  <section class="quote-section">
+    <div class="section-inner">
+      <blockquote class="reveal">
+        "Your data has potential. We'll <em>prove it</em> or <em>disprove it</em>. No hype, no guesswork."
+      </blockquote>
+      <cite class="reveal">What we believe</cite>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="section-inner">
+      <div class="section-label reveal">Pricing</div>
+      <h2 class="section-title reveal">Simple. Transparent. Value-aligned.</h2>
+      <p class="section-desc reveal">
+        Pay for the proof you need. Free tier available for first look.
+      </p>
+
+      <div class="pricing-grid">
+        <div class="pricing-card reveal reveal-delay-1">
+          <div class="coming-soon">Coming Soon</div>
+          <h3>Quick Look</h3>
+          <div class="price">Free</div>
+          <div class="price-sub">See if your data has potential</div>
+          <ul>
+            <li>IC analysis</li>
+            <li>Quintile spread</li>
+            <li>Coverage report</li>
+            <li>Basic dataset profile</li>
+          </ul>
+          <a href="#cta" class="btn-secondary" style="display: block; text-align: center;">Join Waitlist</a>
+        </div>
+        <div class="pricing-card featured reveal reveal-delay-2">
+          <div class="price-badge">Most Popular</div>
+          <h3>Full Certification</h3>
+          <div class="price">$2k to $15k</div>
+          <div class="price-sub">Per dataset audit</div>
+          <ul>
+            <li>Everything in Quick Look</li>
+            <li>Full validation gates (DSR, PBO, CPCV)</li>
+            <li>Alpha Potential Report (PDF)</li>
+            <li>Certified / Not Certified verdict</li>
+            <li>Reproducibility hash</li>
+            <li>Mapping diligence appendix</li>
+          </ul>
+          <a href="#cta" class="btn-primary" style="display: block; text-align: center;">Join Waitlist</a>
+        </div>
+        <div class="pricing-card reveal reveal-delay-3">
+          <div class="coming-soon">Coming Soon</div>
+          <h3>Enterprise</h3>
+          <div class="price">$5k to $25k</div>
+          <div class="price-sub">Per month</div>
+          <ul>
+            <li>Ongoing data updates</li>
+            <li>Category benchmark access</li>
+            <li>Decay monitoring</li>
+            <li>Dedicated support</li>
+            <li>Custom gates</li>
+            <li>API access</li>
+          </ul>
+          <a href="#cta" class="btn-secondary" style="display: block; text-align: center;">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- COMPETITIVE -->
+  <section>
+    <div class="section-inner">
+      <div class="section-label reveal">Landscape</div>
+      <h2 class="section-title reveal">Nobody else does this.</h2>
+      <p class="section-desc reveal">
+        White space in alt-data: independent certification with statistical kill gates. We're not a marketplace. We're the stamp.
+      </p>
+
+      <div class="competitive-table reveal">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Players</th>
+              <th>ADL Angle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Platform</td>
+              <td>Neuravest, CloudQuant, vBase</td>
+              <td class="highlight">Independent cert layer on top</td>
+            </tr>
+            <tr>
+              <td>GTM Services</td>
+              <td>Amass Insights, Alqami</td>
+              <td class="highlight">Referral / cert upsell</td>
+            </tr>
+            <tr>
+              <td>Buy-side Eval</td>
+              <td>Exabel, Maiden Century, Bloomberg</td>
+              <td class="highlight">Sets proof bar funds expect</td>
+            </tr>
+            <tr>
+              <td>Marketplaces</td>
+              <td>Eagle Alpha, Neudata, Datarade</td>
+              <td class="highlight">Partnership for cert badge</td>
+            </tr>
+            <tr>
+              <td>Data Vendors</td>
+              <td>Alphanume, FinBrain, Atlastic</td>
+              <td class="highlight">Neutral third-party cert</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- CTA -->
+  <section id="cta" class="cta-section">
+    <div class="section-inner">
+      <div class="section-label reveal">Early Access</div>
+      <h2 class="section-title reveal">Ready to prove your data?</h2>
+      <p class="section-desc reveal" style="margin: 0 auto 2.5rem;">
+        Join the waitlist. First 5 design partners get free certification audits.
+      </p>
+      <div class="reveal">
+        <form id="waitlist-form" action="https://formspree.io/f/meewpedw" method="POST" style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; max-width: 500px; margin: 0 auto;">
+          <input type="email" placeholder="you@company.com" required
+            style="flex: 1; min-width: 250px; padding: 0.85rem 1.2rem; background: rgba(15, 23, 42, 0.45); border: 1px solid rgba(56, 189, 248, 0.1); border-radius: 12px; color: var(--text); font-size: 1rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
+            onfocus="this.style.borderColor='rgba(56,189,248,0.4)'"
+            onblur="this.style.borderColor='var(--border)'">
+          <button type="submit" class="btn-primary">Join Waitlist</button>
+        </form>
+        <p id="form-message" style="margin-top: 1rem; font-size: 0.85rem; color: var(--green); display: none;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>&copy; 2026 All Data Labs. Alpha, certified.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ============ NAV SCROLL ============
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ============ REVEAL ON SCROLL ============
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    reveals.forEach(el => observer.observe(el));
+
+    // ============ FORM ============
+    document.getElementById('waitlist-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const msg = document.getElementById('form-message');
+      const btn = form.querySelector('button');
+      const email = form.querySelector('input[type="email"]').value;
+
+      btn.textContent = 'Joining...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        if (res.ok) {
+          msg.textContent = "You're on the list. We'll be in touch.";
+          msg.style.display = 'block';
+          form.reset();
+        } else {
+          msg.textContent = "Something went wrong. Try again.";
+          msg.style.color = 'var(--red)';
+          msg.style.display = 'block';
+        }
+      } catch {
+        msg.textContent = "Network error. Try again.";
+        msg.style.color = 'var(--red)';
+        msg.style.display = 'block';
+      }
+      btn.textContent = 'Join Waitlist';
+      btn.disabled = false;
+    });
+
+    // ============ SMOOTH SCROLL ============
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ============ COUNTER ANIMATION ============
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.stat-value').forEach(el => {
+            const target = parseFloat(el.dataset.target);
+            const suffix = el.dataset.suffix || '';
+            const prefix = el.dataset.prefix || '';
+            let current = 0;
+            const increment = target / 60;
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                current = target;
+                clearInterval(timer);
+              }
+              el.textContent = prefix + (Number.isInteger(target) ? Math.floor(current) : current.toFixed(target < 10 ? 2 : 0)) + suffix;
+            }, 16);
+          });
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stats-row').forEach(el => counterObserver.observe(el));
+  </script>
+</body>
+</html>
