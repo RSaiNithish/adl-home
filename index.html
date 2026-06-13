@@ -829,13 +829,38 @@
     /* ============ RESPONSIVE ============ */
     @media (max-width: 768px) {
       nav { padding: 1rem 1.5rem; }
+      nav.scrolled { padding: 0.7rem 1.5rem; }
       .nav-links { display: none; }
-      .hero { padding: 7rem 1.5rem 3rem; }
+      .hero { padding: 6rem 1.5rem 3rem; min-height: auto; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero p { font-size: 1rem; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .float-card { display: none; }
+      .terminal-window { margin: 2rem 0.5rem; }
+      .terminal-body { font-size: 0.7rem; padding: 1rem; }
+      section { padding: 4rem 1.5rem; }
+      .section-title { font-size: 1.8rem; }
+      .section-desc { font-size: 0.95rem; }
       .pipeline-flow { flex-direction: column; gap: 0; }
       .pipeline-arrow { transform: rotate(90deg); }
-      .pipeline-node { max-width: 100%; min-width: auto; }
-      section { padding: 4rem 1.5rem; }
-      .float-card { display: none; }
+      .pipeline-node { max-width: 100%; min-width: auto; padding: 1.5rem 1.2rem; }
+      .evidence-grid { grid-template-columns: 1fr; }
+      .verdict-cards { flex-direction: column; align-items: center; }
+      .verdict-card { min-width: auto; max-width: 100%; width: 100%; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .module-grid { grid-template-columns: 1fr; }
+      .competitive-table { font-size: 0.75rem; }
+      .competitive-table th, .competitive-table td { padding: 0.7rem 0.8rem; }
+      .bg-watermark { width: 400px; height: 400px; }
+      .cta-section h2 { font-size: 1.8rem; }
+      footer { padding: 2rem 1.5rem; text-align: center; }
+      .footer-inner { justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 2rem; }
+      .pipeline-node { padding: 1.2rem 1rem; }
+      .pipeline-node h3 { font-size: 0.95rem; }
+      .terminal-body { font-size: 0.65rem; }
     }
 
     /* ============ SCROLLBAR ============ */
