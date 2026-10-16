@@ -3,1265 +3,292 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090908">
+  <meta name="description" content="All Data Labs scores a trial file and returns a memo you can rerun: Kill, Renegotiate, or Continue. Every figure ties back to the rows.">
   <title>All Data Labs | Trial signal memo</title>
+  <link rel="icon" href="logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #06080d;
-      --bg-card: rgba(12, 18, 30, 0.7);
-      --bg-glass: rgba(15, 23, 42, 0.6);
-      --border: rgba(99, 179, 237, 0.08);
-      --border-hover: rgba(99, 179, 237, 0.2);
-      --text: #e2e8f0;
-      --text-dim: #94a3b8;
-      --text-muted: #64748b;
-      --accent: #38bdf8;
-      --accent2: #818cf8;
-      --accent3: #a78bfa;
-      --green: #34d399;
-      --red: #f87171;
-      --orange: #fb923c;
-      --glow: 0 0 40px rgba(56, 189, 248, 0.15);
-      --glow-strong: 0 0 80px rgba(56, 189, 248, 0.25);
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
-
-    /* ============ BACKGROUND ============ */
-    .bg-grid {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(56, 189, 248, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.025) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-    }
-    .bg-watermark {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 700px;
-      background: url('logo.png') center / contain no-repeat;
-      opacity: 0.06;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(0.5px);
-    }
-
-    /* ============ NAV ============ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1.2rem 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(6, 8, 13, 0.5);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid rgba(56, 189, 248, 0.06);
-      transition: all 0.3s;
-    }
-    nav.scrolled {
-      padding: 0.8rem 3rem;
-      background: rgba(6, 8, 13, 0.8);
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .nav-logo-img {
-      width: 36px;
-      height: 36px;
-      object-fit: contain;
-      border-radius: 6px;
-    }
-    .nav-logo-text {
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: -0.02em;
-    }
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-    .nav-links a {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: color 0.2s;
-      letter-spacing: 0.02em;
-    }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-cta {
-      padding: 0.55rem 1.3rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: var(--bg) !important;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .nav-cta:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--glow);
-    }
-
-    /* ============ HERO ============ */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8rem 2rem 4rem;
-      z-index: 1;
-    }
-    .hero-content { max-width: 900px; }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 1rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-bottom: 2rem;
-      backdrop-filter: blur(10px);
-    }
-    .hero-badge .dot {
-      width: 6px; height: 6px;
-      background: var(--green);
-      border-radius: 50%;
-      animation: pulse-dot 2s infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    .hero h1 {
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin-bottom: 1.5rem;
-    }
-    .hero h1 .gradient-text {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 1.25rem;
-      color: var(--text-dim);
-      max-width: 600px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-    }
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      padding: 0.85rem 2rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: var(--bg);
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      text-decoration: none;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--glow-strong);
-    }
-    .btn-secondary {
-      padding: 0.85rem 2rem;
-      background: var(--bg-glass);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      text-decoration: none;
-      backdrop-filter: blur(10px);
-    }
-    .btn-secondary:hover {
-      border-color: var(--border-hover);
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    /* ============ HERO FLOATING CARDS ============ */
-    .hero-visuals {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .float-card {
-      position: absolute;
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 14px;
-      padding: 0.8rem 1rem;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      font-size: 0.65rem;
-      animation: float 8s ease-in-out infinite;
-      min-width: 120px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .float-card:nth-child(1) { top: 12%; left: 4%; animation-delay: 0s; }
-    .float-card:nth-child(2) { top: 12%; right: 4%; animation-delay: -2s; }
-    .float-card:nth-child(3) { bottom: 28%; left: 5%; animation-delay: -4s; }
-    .float-card:nth-child(4) { bottom: 28%; right: 5%; animation-delay: -6s; }
-    .fc-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-    }
-    .fc-label { color: var(--text-muted); font-weight: 500; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; }
-    .fc-badge {
-      padding: 0.15rem 0.45rem;
-      border-radius: 6px;
-      font-size: 0.55rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .fc-badge.pass { background: rgba(52, 211, 153, 0.12); color: var(--green); }
-    .fc-badge.live { background: rgba(56, 189, 248, 0.12); color: var(--accent); }
-    .fc-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 1.1;
-    }
-    .fc-value.green { color: var(--green); }
-    .fc-value.accent { color: var(--accent); }
-    .fc-value.orange { color: var(--orange); }
-    .fc-sub {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-    .fc-sparkline {
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 14px;
-      margin-top: 0.4rem;
-    }
-    .fc-sparkline .bar {
-      flex: 1;
-      border-radius: 2px;
-      min-width: 3px;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    /* ============ SECTION COMMON ============ */
-    section {
-      position: relative;
-      z-index: 1;
-      padding: 7rem 2rem;
-      scroll-margin-top: 5rem;
-    }
-    .section-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .section-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 1rem;
-    }
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
-      line-height: 1.15;
-    }
-    .section-desc {
-      font-size: 1.1rem;
-      color: var(--text-dim);
-      max-width: 600px;
-      line-height: 1.7;
-    }
-
-    /* ============ PIPELINE ============ */
-    .pipeline-section {
-      background: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.02) 50%, transparent 100%);
-    }
-    .pipeline-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      margin-top: 4rem;
-      flex-wrap: wrap;
-    }
-    .pipeline-node {
-      position: relative;
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 16px;
-      padding: 2rem 1.8rem;
-      text-align: center;
-      min-width: 200px;
-      flex: 1;
-      max-width: 240px;
-      transition: all 0.4s;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .pipeline-node:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-4px);
-      box-shadow: var(--glow);
-    }
-    .pipeline-node .node-icon {
-      width: 56px; height: 56px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      position: relative;
-    }
-    .pipeline-node .node-icon svg {
-      width: 26px;
-      height: 26px;
-    }
-    .pipeline-node .node-icon::after {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: -1;
-    }
-    .pipeline-node:hover .node-icon::after { opacity: 0.3; }
-    .node-icon.upload { background: rgba(56, 189, 248, 0.12); color: var(--accent); }
-    .node-icon.sera { background: rgba(129, 140, 248, 0.12); color: var(--accent2); }
-    .node-icon.alpha { background: rgba(167, 139, 250, 0.12); color: var(--accent3); }
-    .node-icon.proof { background: rgba(52, 211, 153, 0.12); color: var(--green); }
-    .node-icon.report { background: rgba(251, 146, 60, 0.12); color: var(--orange); }
-    .pipeline-node h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-    .pipeline-node p {
-      font-size: 0.8rem;
-      color: var(--text-dim);
-      line-height: 1.5;
-    }
-    .pipeline-arrow {
-      font-size: 1.5rem;
-      color: var(--text-muted);
-      flex-shrink: 0;
-      padding: 0 0.5rem;
-    }
-
-    /* ============ FEATURES GRID ============ */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-    .feature-card {
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.4s;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .feature-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-3px);
-      box-shadow: var(--glow);
-    }
-    .feature-card:hover::before { opacity: 1; }
-    .feature-icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      margin-bottom: 1.2rem;
-    }
-    .feature-card h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .feature-card p {
-      font-size: 0.88rem;
-      color: var(--text-dim);
-      line-height: 1.6;
-    }
-
-    /* ============ PROOF EVIDENCE ============ */
-    .evidence-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-top: 3rem;
-    }
-    .evidence-item {
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .evidence-item:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-    }
-    .evidence-item .ev-icon {
-      margin-bottom: 0.7rem;
-      color: var(--accent);
-    }
-    .evidence-item .ev-icon svg {
-      width: 22px;
-      height: 22px;
-    }
-    .evidence-item h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-    .evidence-item p {
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
-
-    /* ============ VERDICT ============ */
-    .verdict-section {
-      text-align: center;
-    }
-    .verdict-cards {
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      margin-top: 4rem;
-      flex-wrap: wrap;
-    }
-    .verdict-card {
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
-      min-width: 280px;
-      max-width: 340px;
-      flex: 1;
-      transition: all 0.4s;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .verdict-card:hover {
-      transform: translateY(-4px);
-    }
-    .verdict-card.pass {
-      border-color: rgba(52, 211, 153, 0.2);
-    }
-    .verdict-card.pass:hover {
-      box-shadow: 0 0 60px rgba(52, 211, 153, 0.15);
-      border-color: rgba(52, 211, 153, 0.4);
-    }
-    .verdict-card.fail {
-      border-color: rgba(248, 113, 113, 0.15);
-    }
-    .verdict-card.fail:hover {
-      box-shadow: 0 0 60px rgba(248, 113, 113, 0.1);
-      border-color: rgba(248, 113, 113, 0.3);
-    }
-    .verdict-card.inconclusive {
-      border-color: rgba(251, 146, 60, 0.15);
-    }
-    .verdict-card.inconclusive:hover {
-      box-shadow: 0 0 60px rgba(251, 146, 60, 0.1);
-      border-color: rgba(251, 146, 60, 0.3);
-    }
-    .verdict-card .v-icon {
-      margin-bottom: 1rem;
-    }
-    .verdict-card .v-icon svg {
-      width: 36px;
-      height: 36px;
-    }
-    .verdict-card h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .verdict-card p {
-      font-size: 0.9rem;
-      color: var(--text-dim);
-      line-height: 1.6;
-    }
-
-    /* ============ PRICING ============ */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-    .pricing-card {
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
-      transition: all 0.4s;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      position: relative;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .pricing-card.featured {
-      border-color: rgba(56, 189, 248, 0.3);
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.05));
-    }
-    .pricing-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--glow);
-    }
-    .pricing-card .price-badge {
-      position: absolute;
-      top: -12px;
-      right: 20px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: var(--bg);
-      padding: 0.3rem 0.8rem;
-      border-radius: 100px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .pricing-card h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .pricing-card .price {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 0.3rem;
-    }
-    .pricing-card .price-sub {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-    }
-    .pricing-card ul {
-      list-style: none;
-      margin-bottom: 1.5rem;
-    }
-    .pricing-card li {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      padding: 0.4rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .pricing-card li::before {
-      content: '✓';
-      color: var(--green);
-      font-weight: 700;
-    }
-
-    /* ============ COMPETITIVE ============ */
-    .competitive-table {
-      margin-top: 3rem;
-      overflow-x: auto;
-    }
-    .competitive-table table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .competitive-table th, .competitive-table td {
-      padding: 1rem 1.2rem;
-      text-align: left;
-      font-size: 0.85rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .competitive-table th {
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-    }
-    .competitive-table tr:hover td {
-      background: rgba(56, 189, 248, 0.03);
-    }
-    .competitive-table .highlight {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* ============ TESTIMONIAL / QUOTE ============ */
-    .quote-section {
-      text-align: center;
-      padding: 6rem 2rem;
-    }
-    .quote-section blockquote {
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
-      font-weight: 300;
-      font-style: italic;
-      max-width: 800px;
-      margin: 0 auto 1.5rem;
-      line-height: 1.5;
-      color: var(--text);
-    }
-    .quote-section blockquote em {
-      color: var(--accent);
-      font-weight: 500;
-    }
-    .quote-section cite {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-style: normal;
-    }
-
-    /* ============ CTA ============ */
-    .cta-section {
-      text-align: center;
-      padding: 8rem 2rem;
-      position: relative;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-section h2 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-    }
-
-    /* ============ FOOTER ============ */
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem;
-    }
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .footer-inner p {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
-    /* ============ COMING SOON BANNER ============ */
-    .coming-soon {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.25rem 0.7rem;
-      background: rgba(251, 146, 60, 0.1);
-      border: 1px solid rgba(251, 146, 60, 0.2);
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--orange);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* ============ TERMINAL / TYPING ============ */
-    .terminal-window {
-      background: rgba(12, 18, 30, 0.5);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 12px;
-      max-width: 700px;
-      margin: 3rem auto 0;
-      overflow: hidden;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .terminal-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.7rem 1rem;
-      background: rgba(30, 41, 59, 0.3);
-      border-bottom: 1px solid rgba(56, 189, 248, 0.06);
-    }
-    .terminal-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-    }
-    .terminal-dot.r { background: #f87171; }
-    .terminal-dot.y { background: #fbbf24; }
-    .terminal-dot.g { background: #34d399; }
-    .terminal-title {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-      margin-left: 0.5rem;
-    }
-    .terminal-body {
-      padding: 1.2rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      line-height: 1.8;
-      color: var(--text-dim);
-    }
-    .terminal-body .prompt { color: var(--accent); }
-    .terminal-body .cmd { color: var(--text); }
-    .terminal-body .output { color: var(--text-muted); }
-    .terminal-body .success { color: var(--green); }
-    .terminal-body .warning { color: var(--orange); }
-
-    /* ============ ANIMATIONS ============ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
-
-    /* ============ GLOW LINE ============ */
-    .glow-line {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
-      opacity: 0.3;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* ============ RESPONSIVE ============ */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      nav.scrolled { padding: 0.7rem 1.5rem; }
-      .nav-links { display: none; }
-      .hero { padding: 6rem 1.5rem 3rem; min-height: auto; }
-      .hero h1 { font-size: 2.5rem; }
-      .hero p { font-size: 1rem; }
-      .hero-buttons { flex-direction: column; align-items: center; }
-      .float-card { display: none; }
-      .terminal-window { margin: 2rem 0.5rem; }
-      .terminal-body { font-size: 0.7rem; padding: 1rem; }
-      section { padding: 4rem 1.5rem; }
-      .section-title { font-size: 1.8rem; }
-      .section-desc { font-size: 0.95rem; }
-      .pipeline-flow { flex-direction: column; gap: 0; }
-      .pipeline-arrow { transform: rotate(90deg); }
-      .pipeline-node { max-width: 100%; min-width: auto; padding: 1.5rem 1.2rem; }
-      .evidence-grid { grid-template-columns: 1fr; }
-      .verdict-cards { flex-direction: column; align-items: center; }
-      .verdict-card { min-width: auto; max-width: 100%; width: 100%; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      .module-grid { grid-template-columns: 1fr; }
-      .competitive-table { font-size: 0.75rem; }
-      .competitive-table th, .competitive-table td { padding: 0.7rem 0.8rem; }
-      .bg-watermark { width: 400px; height: 400px; }
-      .cta-section h2 { font-size: 1.8rem; }
-      footer { padding: 2rem 1.5rem; text-align: center; }
-      .footer-inner { justify-content: center; }
-    }
-    @media (max-width: 480px) {
-      .hero h1 { font-size: 2rem; }
-      .pipeline-node { padding: 1.2rem 1rem; }
-      .pipeline-node h3 { font-size: 0.95rem; }
-      .terminal-body { font-size: 0.65rem; }
-    }
-
-    /* ============ SCROLLBAR ============ */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
-
-    /* ============ COUNTER ANIMATION ============ */
-    .stats-row {
-      display: flex;
-      gap: 3rem;
-      justify-content: center;
-      margin-top: 4rem;
-      flex-wrap: wrap;
-    }
-    .stat-item { text-align: center; }
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 800;
-      font-family: 'JetBrains Mono', monospace;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 0.3rem;
-    }
-
-    /* ============ MODULE STATUS ============ */
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-    .module-card {
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.08);
-      border-radius: 16px;
-      padding: 2rem;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      transition: all 0.3s;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-    .module-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-    }
-    .module-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 1rem;
-    }
-    .module-status .s-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-    }
-    .module-status.building .s-dot { background: var(--accent); }
-    .module-status.building { color: var(--accent); }
-    .module-status.coming .s-dot { background: var(--orange); }
-    .module-status.coming { color: var(--orange); }
-    .module-status.planned .s-dot { background: var(--text-muted); }
-    .module-status.planned { color: var(--text-muted); }
-    .module-card h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .module-card p {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      line-height: 1.6;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <svg class="grain" aria-hidden="true">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"></feTurbulence>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-filter)"></rect>
+  </svg>
+  <div class="progress" id="progress"></div>
 
-  <div class="bg-grid"></div>
-  <div class="bg-watermark"></div>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="#top">
+        <img src="logo.png" alt="" width="32" height="32">
+        <span>All Data Labs</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#method">Method</a></li>
+        <li><a href="#checks">Checks</a></li>
+        <li><a href="#verdicts">Verdicts</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <a class="btn btn-small" href="#request">Request a memo</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    </div>
+  </header>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <a href="#" class="nav-logo">
-      <img src="logo.png" alt="All Data Labs" class="nav-logo-img">
-      <span class="nav-logo-text">All Data Labs</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#pipeline">How it works</a></li>
-      <li><a href="#checks">Checks</a></li>
-      <li><a href="#verdicts">Verdicts</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#cta" class="nav-cta">Request a memo</a></li>
-    </ul>
+  <nav class="nav-panel" id="menu" hidden>
+    <a href="#method">Method</a>
+    <a href="#checks">Checks</a>
+    <a href="#verdicts">Verdicts</a>
+    <a href="#pricing">Pricing</a>
+    <a class="panel-cta" href="#request">Request a memo</a>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-visuals">
-      <div class="float-card">
-        <div class="fc-header">
-          <span class="fc-label">Small-name match</span>
-          <span class="fc-badge" style="background: rgba(248,113,113,0.12); color: var(--red);">Miss</span>
-        </div>
-        <div class="fc-value" style="color: var(--red);">31%</div>
-        <div class="fc-sub">Sample memo, smaller names</div>
-        <div class="fc-sparkline">
-          <div class="bar" style="height:40%; background:var(--green); opacity:0.4"></div>
-          <div class="bar" style="height:55%; background:var(--green); opacity:0.5"></div>
-          <div class="bar" style="height:35%; background:var(--green); opacity:0.4"></div>
-          <div class="bar" style="height:70%; background:var(--green); opacity:0.6"></div>
-          <div class="bar" style="height:60%; background:var(--green); opacity:0.5"></div>
-          <div class="bar" style="height:80%; background:var(--green); opacity:0.7"></div>
-          <div class="bar" style="height:75%; background:var(--green); opacity:0.6"></div>
-          <div class="bar" style="height:90%; background:var(--green); opacity:0.8"></div>
-          <div class="bar" style="height:85%; background:var(--green); opacity:0.9"></div>
-          <div class="bar" style="height:95%; background:var(--green); opacity:1"></div>
-        </div>
-      </div>
-      <div class="float-card">
-        <div class="fc-header">
-          <span class="fc-label">Index-weight match</span>
-          <span class="fc-badge pass">Pass</span>
-        </div>
-        <div class="fc-value green">96%</div>
-        <div class="fc-sub">Sample memo, large names</div>
-        <div class="fc-sparkline">
-          <div class="bar" style="height:30%; background:var(--accent); opacity:0.3"></div>
-          <div class="bar" style="height:45%; background:var(--accent); opacity:0.4"></div>
-          <div class="bar" style="height:50%; background:var(--accent); opacity:0.5"></div>
-          <div class="bar" style="height:55%; background:var(--accent); opacity:0.5"></div>
-          <div class="bar" style="height:65%; background:var(--accent); opacity:0.6"></div>
-          <div class="bar" style="height:60%; background:var(--accent); opacity:0.6"></div>
-          <div class="bar" style="height:75%; background:var(--accent); opacity:0.7"></div>
-          <div class="bar" style="height:80%; background:var(--accent); opacity:0.8"></div>
-          <div class="bar" style="height:90%; background:var(--accent); opacity:0.9"></div>
-          <div class="bar" style="height:100%; background:var(--accent); opacity:1"></div>
-        </div>
-      </div>
-      <div class="float-card">
-        <div class="fc-header">
-          <span class="fc-label">Point in time</span>
-          <span class="fc-badge" style="background: rgba(251,146,60,0.12); color: var(--orange);">Open</span>
-        </div>
-        <div class="fc-value orange">None</div>
-        <div class="fc-sub">No first-seen column</div>
-        <div class="fc-sparkline">
-          <div class="bar" style="height:50%; background:var(--green); opacity:0.4"></div>
-          <div class="bar" style="height:65%; background:var(--green); opacity:0.5"></div>
-          <div class="bar" style="height:45%; background:var(--green); opacity:0.4"></div>
-          <div class="bar" style="height:80%; background:var(--green); opacity:0.7"></div>
-          <div class="bar" style="height:70%; background:var(--green); opacity:0.6"></div>
-        </div>
-      </div>
-      <div class="float-card">
-        <div class="fc-header">
-          <span class="fc-label">Verdict</span>
-          <span class="fc-badge" style="background: rgba(251,146,60,0.12); color: var(--orange);">Sample</span>
-        </div>
-        <div class="fc-value orange" style="font-size: 1rem;">Renegotiate</div>
-        <div class="fc-sub">Panel 2.1× in year two</div>
-      </div>
-    </div>
+  <nav class="rail" aria-label="Sections">
+    <a href="#top"><i></i>Memo</a>
+    <a href="#method"><i></i>Method</a>
+    <a href="#checks"><i></i>Checks</a>
+    <a href="#verdicts"><i></i>Verdicts</a>
+    <a href="#pricing"><i></i>Pricing</a>
+  </nav>
 
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        Trial signal memo
-      </div>
-      <h1>
-        <span class="gradient-text">Score the trial.</span><br>
-        Before anyone talks about alpha.
-      </h1>
-      <p>
-        Send a trial file and a list of companies. Get a memo you can rerun: Kill, Renegotiate, or Continue. Every figure ties back to the rows. The fund keeps the alpha model.
-      </p>
-      <div class="hero-buttons">
-        <a href="#cta" class="btn-primary">Request a memo</a>
-        <a href="#checks" class="btn-secondary">See the checks</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- TERMINAL -->
-  <div class="terminal-window reveal">
-    <div class="terminal-header">
-      <div class="terminal-dot r"></div>
-      <div class="terminal-dot y"></div>
-      <div class="terminal-dot g"></div>
-      <span class="terminal-title">trialscore run — sample card panel</span>
-    </div>
-    <div class="terminal-body">
-      <div><span class="prompt">$</span> <span class="cmd">trialscore run card_trial/</span></div>
-      <div class="output">→ Mapping accepted. Ambiguous names stay unmatched.</div>
-      <div class="output">→ Index-weight match 96%. Smaller names 31%.</div>
-      <div class="output">→ Point in time: <span class="warning">unverified</span> — no first-seen column</div>
-      <div class="output">→ Panel size 2.1× in year two vs year one</div>
-      <div class="output">→ Revenue fit 0.62 on the event date, 0.28 after lag</div>
-      <div><span class="warning">RENEGOTIATE</span> rule renegotiate-history · memo.json</div>
-    </div>
-  </div>
-
-  <!-- PIPELINE -->
-  <section id="pipeline" class="pipeline-section">
-    <div class="section-inner">
-      <div class="section-label reveal">How it works</div>
-      <h2 class="section-title reveal">A file in. A verdict out.</h2>
-      <p class="section-desc reveal">
-        The same inputs rewrite the same memo. A model may propose the column map. It does not score the file, and it does not see the fund's alpha model.
-      </p>
-
-      <div class="pipeline-flow">
-        <div class="pipeline-node reveal reveal-delay-1">
-          <div class="node-icon upload"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-          <h3>File</h3>
-          <p>A trial history plus the buyer's list of companies. Two drops of the same weeks are better than one.</p>
+  <main id="top">
+    <div class="wrap spread">
+      <div class="hero-copy">
+        <p class="kicker"><span>01</span> Trial signal memo</p>
+        <h1>Score the trial<em>before anyone talks about alpha.</em></h1>
+        <p class="lede">
+          Send a trial file and a list of companies. Get a memo you can rerun: Kill, Renegotiate, or Continue. Every figure ties back to the rows. The fund keeps the alpha model.
+        </p>
+        <div class="actions">
+          <a class="btn" href="#request">Request a memo</a>
+          <a class="link" href="#checks">See the checks</a>
         </div>
-        <div class="pipeline-arrow reveal reveal-delay-2">→</div>
-        <div class="pipeline-node reveal reveal-delay-2">
-          <div class="node-icon sera"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-          <h3>Map</h3>
-          <p>Names resolve to a FIGI. Ambiguous stays ambiguous and counts as a miss.</p>
-        </div>
-        <div class="pipeline-arrow reveal reveal-delay-3">→</div>
-        <div class="pipeline-node reveal reveal-delay-3">
-          <div class="node-icon proof"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <h3>Checks</h3>
-          <p>Coverage, point in time, known events, and reported revenue after the filing date.</p>
-        </div>
-        <div class="pipeline-arrow reveal reveal-delay-4">→</div>
-        <div class="pipeline-node reveal reveal-delay-4">
-          <div class="node-icon report"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
-          <h3>Memo</h3>
-          <p>Kill, Renegotiate, or Continue. The rule id and the rows sit under every number.</p>
-        </div>
+        <ul class="facts">
+          <li>
+            <strong>39%</strong>
+            <span>Trials die for lack of a signal</span>
+          </li>
+          <li>
+            <strong>27%</strong>
+            <span>Buyers convert more than a quarter of trials</span>
+          </li>
+          <li>
+            <strong>4–6 mo</strong>
+            <span>Onboarding time for 36% of buyers</span>
+          </li>
+        </ul>
+        <p class="source">Neudata buyer surveys, 2026. Investment managers spent about $2.8bn on alternative data in 2025.</p>
       </div>
 
-      <div class="stats-row reveal">
-        <div class="stat-item">
-          <div class="stat-value" data-target="39" data-suffix="%">0%</div>
-          <div class="stat-label">Trials die for lack of a signal</div>
+      <aside class="spread-memo">
+        <div class="sheet">
+          <i class="crop tl" aria-hidden="true"></i>
+          <i class="crop tr" aria-hidden="true"></i>
+          <i class="crop bl" aria-hidden="true"></i>
+          <i class="crop br" aria-hidden="true"></i>
+          <article class="memo" id="memo" aria-label="Sample trial memo">
+            <header class="memo-mast">
+              <span>All Data Labs</span>
+              <span>Sample</span>
+            </header>
+            <div class="memo-rules" aria-hidden="true"></div>
+            <p class="memo-cmd"><span>trialscore</span> run card_trial/</p>
+            <div class="memo-verdict" id="verdict">
+              <p>Verdict</p>
+              <strong>Renegotiate</strong>
+              <p class="rule-id">renegotiate-history</p>
+            </div>
+            <div class="rows">
+              <div class="row" id="match-lg">
+                <div>
+                  <div class="name">Index-weight match</div>
+                  <div class="sub">Large names</div>
+                </div>
+                <div class="val ok">96%</div>
+                <div class="meter" style="--w: 96%"><span></span></div>
+              </div>
+              <div class="row" id="match-sm">
+                <div>
+                  <div class="name">Small-name match</div>
+                  <div class="sub">Smaller names</div>
+                </div>
+                <div class="val miss">31%</div>
+                <div class="meter miss" style="--w: 31%"><span></span></div>
+              </div>
+              <div class="row" id="pit">
+                <div>
+                  <div class="name">Point in time</div>
+                  <div class="sub">No first-seen column</div>
+                </div>
+                <div class="val warn">Unverified</div>
+              </div>
+              <div class="row" id="panel">
+                <div>
+                  <div class="name">Panel, year two</div>
+                  <div class="sub">Versus year one</div>
+                </div>
+                <div class="val warn">2.1×</div>
+              </div>
+              <div class="row" id="rev-event">
+                <div>
+                  <div class="name">Revenue fit, event date</div>
+                  <div class="sub">Rank correlation</div>
+                </div>
+                <div class="val">0.62</div>
+                <div class="meter" style="--w: 62%"><span></span></div>
+              </div>
+              <div class="row" id="rev-lag">
+                <div>
+                  <div class="name">Revenue fit, after lag</div>
+                  <div class="sub">Once the filing date applies</div>
+                </div>
+                <div class="val warn">0.28</div>
+                <div class="meter" style="--w: 28%"><span></span></div>
+              </div>
+            </div>
+            <p class="memo-foot">Mapping accepted. Ambiguous names stay unmatched. The fund keeps the alpha model.</p>
+          </article>
         </div>
-        <div class="stat-item">
-          <div class="stat-value" data-target="27" data-suffix="%">0%</div>
-          <div class="stat-label">Buyers convert more than a quarter of trials</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">4–6 mo</div>
-          <div class="stat-label">Onboarding time for 36% of buyers</div>
-        </div>
-      </div>
-      <p class="reveal" style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">
-        Neudata buyer surveys, 2026. Investment managers spent about $2.8bn on alternative data in 2025.
-      </p>
-    </div>
-  </section>
+        <p class="sheet-cap">Sample card panel · memo.json</p>
+      </aside>
 
-  <div class="glow-line"></div>
+      <div class="spread-rest">
+        <section class="block" id="method">
+          <p class="kicker"><span>02</span> Method</p>
+          <h2>A file in. A verdict out.</h2>
+          <p class="lede">The same inputs rewrite the same memo.</p>
+          <ol class="steps">
+            <li class="step">
+              <span class="num">01</span>
+              <h3>File</h3>
+              <p>A trial history plus the buyer’s list of companies. Two drops of the same weeks are better than one.</p>
+            </li>
+            <li class="step">
+              <span class="num">02</span>
+              <h3>Map</h3>
+              <p>Names resolve to a FIGI. Ambiguous stays ambiguous and counts as a miss.</p>
+            </li>
+            <li class="step">
+              <span class="num">03</span>
+              <h3>Checks</h3>
+              <p>Coverage, point in time, known events, and reported revenue after the filing date.</p>
+            </li>
+            <li class="step">
+              <span class="num">04</span>
+              <h3>Memo</h3>
+              <p>Kill, Renegotiate, or Continue. The rule id and the rows sit under every number.</p>
+            </li>
+          </ol>
+          <p class="aside">A model may propose the column map. It does not score the file, and it does not see the fund’s alpha model.</p>
+        </section>
 
-  <!-- CHECKS -->
-  <section id="checks">
-    <div class="section-inner">
-      <div class="section-label reveal">Checks</div>
-      <h2 class="section-title reveal">Six tests. No blended score.</h2>
-      <p class="section-desc reveal">
-        These are the checks a data team already runs by hand in the first weeks of a trial. The public benchmark is reported revenue, using the SEC filing date. There is no price panel and no Sharpe ratio.
-      </p>
-
-      <div class="evidence-grid">
-        <div class="evidence-item reveal reveal-delay-1">
-          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-          <h4>File adequacy</h4>
-          <p>Event date, first-seen date, and a revision flag. A zero is not a missing value unless the manifest says so.</p>
-        </div>
-        <div class="evidence-item reveal reveal-delay-1">
-          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-          <h4>Entity match</h4>
-          <p>Weighted coverage of the buyer's names. A fuzzy guess can propose a FIGI. It cannot write one.</p>
-        </div>
-        <div class="evidence-item reveal reveal-delay-2">
-          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <h4>Coverage shape</h4>
-          <p>Whether the panel stays stable through time, including names that later delisted.</p>
-        </div>
-        <div class="evidence-item reveal reveal-delay-2">
-          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <h4>Point in time</h4>
-          <p>Two drops of the same week agree, or the change carries a new first-seen time.</p>
-        </div>
-        <div class="evidence-item reveal reveal-delay-3">
-          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-          <h4>Known events</h4>
-          <p>Closures, outages, or layoffs move the series the way the public record says they should. The event list is frozen before the run.</p>
-        </div>
-        <div class="evidence-item reveal reveal-delay-3">
-          <div class="ev-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <h4>Public benchmark</h4>
-          <p>Rank correlation with reported revenue, counted only once the filing date says the data was knowable.</p>
-        </div>
+        <section class="block" id="checks">
+          <p class="kicker"><span>03</span> Checks</p>
+          <h2>Six tests. No blended score.</h2>
+          <p class="lede">These are the checks a data team already runs by hand in the first weeks of a trial. The public benchmark is reported revenue, using the SEC filing date. There is no price panel and no Sharpe ratio.</p>
+          <p class="hint">Point at a test. The sample memo marks the figure.</p>
+          <div class="checks">
+            <article class="check" tabindex="0" data-hl="pit">
+              <span class="num">01</span>
+              <h3>File adequacy</h3>
+              <p>Event date, first-seen date, and a revision flag. A zero is not a missing value unless the manifest says so.</p>
+            </article>
+            <article class="check" tabindex="0" data-hl="match-lg match-sm">
+              <span class="num">02</span>
+              <h3>Entity match</h3>
+              <p>Weighted coverage of the buyer’s names. A fuzzy guess can propose a FIGI. It cannot write one.</p>
+            </article>
+            <article class="check" tabindex="0" data-hl="panel">
+              <span class="num">03</span>
+              <h3>Coverage shape</h3>
+              <p>Whether the panel stays stable through time, including names that later delisted.</p>
+            </article>
+            <article class="check" tabindex="0" data-hl="pit">
+              <span class="num">04</span>
+              <h3>Point in time</h3>
+              <p>Two drops of the same week agree, or the change carries a new first-seen time.</p>
+            </article>
+            <article class="check" tabindex="0" data-hl="verdict">
+              <span class="num">05</span>
+              <h3>Known events</h3>
+              <p>Closures, outages, or layoffs move the series the way the public record says they should. The event list is frozen before the run.</p>
+            </article>
+            <article class="check" tabindex="0" data-hl="rev-event rev-lag">
+              <span class="num">06</span>
+              <h3>Public benchmark</h3>
+              <p>Rank correlation with reported revenue, counted only once the filing date says the data was knowable.</p>
+            </article>
+          </div>
+        </section>
       </div>
     </div>
-  </section>
 
-  <div class="glow-line"></div>
-
-  <!-- VERDICTS -->
-  <section id="verdicts" class="verdict-section">
-    <div class="section-inner">
-      <div class="section-label reveal">Verdicts</div>
-      <h2 class="section-title reveal">First matching rule wins.</h2>
-      <p class="section-desc reveal" style="margin-left: auto; margin-right: auto;">
-        Renegotiate is the useful outcome in a live trial. It says what to fix, what to cut from the price, and which history must not be backtested.
-      </p>
-
-      <div class="verdict-cards">
-        <div class="verdict-card fail reveal reveal-delay-1">
-          <div class="v-icon"><svg width="32" height="32" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-          <h3>Kill</h3>
+    <section class="wrap block" id="verdicts">
+      <p class="kicker"><span>04</span> Verdicts</p>
+      <h2>First matching rule wins.</h2>
+      <p class="lede">Renegotiate is the useful outcome in a live trial. It says what to fix, what to cut from the price, and which history must not be backtested.</p>
+      <div class="triptych">
+        <article>
+          <p class="idx">01</p>
+          <h3><i class="mark kill" aria-hidden="true"></i>Kill</h3>
           <p>The weighted match is too thin, or known events fail in the wrong direction. Stop the trial and send the misses back.</p>
-        </div>
-        <div class="verdict-card inconclusive reveal reveal-delay-2">
-          <div class="v-icon"><svg width="32" height="32" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-          <h3>Renegotiate</h3>
+        </article>
+        <article>
+          <p class="idx">02</p>
+          <h3><i class="mark hold" aria-hidden="true"></i>Renegotiate</h3>
           <p>A relationship may exist, but the history was rebuilt, the panel jumped, or the fit shrinks once publication lag is applied.</p>
-        </div>
-        <div class="verdict-card pass reveal reveal-delay-3">
-          <div class="v-icon"><svg width="32" height="32" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-          <h3>Continue</h3>
+        </article>
+        <article>
+          <p class="idx">03</p>
+          <h3><i class="mark go" aria-hidden="true"></i>Continue</h3>
           <p>Mapping holds on small names, revisions are logged, and a pre-registered public test still points the right way after lag.</p>
-        </div>
+        </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="glow-line"></div>
-
-  <!-- WHO -->
-  <section id="who">
-    <div class="section-inner">
-      <div class="section-label reveal">Who it's for</div>
-      <h2 class="section-title reveal">Vendors first. Funds second.</h2>
-      <p class="section-desc reveal">
-        Card spend is the account. Job postings are the demo. The memo format stays the same. The event library changes.
-      </p>
-
-      <div class="module-grid">
-        <div class="module-card reveal reveal-delay-1">
-          <div class="module-status building"><span class="s-dot"></span> Now</div>
+    <section class="wrap block" id="who">
+      <p class="kicker"><span>05</span> Who it’s for</p>
+      <h2>Vendors first. Funds second.</h2>
+      <p class="lede">Card spend is the account. Job postings are the demo. The memo format stays the same. The event library changes.</p>
+      <div class="people">
+        <article>
+          <p class="status">Now</p>
           <h3>Data vendors</h3>
           <p>You are mid-trial and the buyer cannot see a signal. The memo goes in the data room: what matched, what was rebuilt, and what to change before the quarter ends.</p>
-        </div>
-        <div class="module-card reveal reveal-delay-2">
-          <div class="module-status coming"><span class="s-dot"></span> Next</div>
+        </article>
+        <article>
+          <p class="status">Next</p>
           <h3>Buy-side data teams</h3>
           <p>The same checks on every inbound file, inside your cloud. Re-run them when the live feed revises a past week.</p>
-        </div>
-        <div class="module-card reveal reveal-delay-3">
-          <div class="module-status planned"><span class="s-dot"></span> Stays with you</div>
+        </article>
+        <article>
+          <p class="status later">Stays with you</p>
           <h3>The alpha model</h3>
           <p>We do not estimate a book, search theses, or certify a return. After Continue, that work is yours.</p>
-        </div>
+        </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="glow-line"></div>
-
-  <!-- QUOTE -->
-  <section class="quote-section">
-    <div class="section-inner">
-      <blockquote class="reveal">
+    <section class="wrap pull">
+      <blockquote>
         The trial dies while someone is still <em>mapping names</em>. Score the file, or say it is not evidence yet.
       </blockquote>
-      <cite class="reveal">All Data Labs</cite>
-    </div>
-  </section>
+      <cite>All Data Labs</cite>
+    </section>
 
-  <!-- PRICING -->
-  <section id="pricing">
-    <div class="section-inner">
-      <div class="section-label reveal">Pricing</div>
-      <h2 class="section-title reveal">Less than one feed you kill.</h2>
-      <p class="section-desc reveal">
-        Design-partner memos are $2k to $15k. A dataset license is often $50k to $500k a year. There is no free information-coefficient preview.
-      </p>
-
-      <div class="pricing-grid">
-        <div class="pricing-card featured reveal reveal-delay-1">
-          <div class="price-badge">Design partner</div>
+    <section class="wrap block" id="pricing">
+      <p class="kicker"><span>06</span> Pricing</p>
+      <h2>Less than one feed you kill.</h2>
+      <p class="lede">Design-partner memos are $2k to $15k. A dataset license is often $50k to $500k a year. There is no free information-coefficient preview.</p>
+      <div class="prices">
+        <article>
+          <p class="tier">Design partner</p>
           <h3>Trial memo</h3>
-          <div class="price">$2k–$15k</div>
-          <div class="price-sub">One dataset, one run you can rerun</div>
+          <p class="price">$2k–$15k</p>
+          <p class="price-sub">One dataset, one run you can rerun</p>
           <ul>
             <li>Six checks and a rule id</li>
             <li>Match table, with ambiguous names listed</li>
@@ -1270,191 +297,85 @@
             <li>Revenue comparison after the filing date</li>
             <li>A hash of the files and the thresholds</li>
           </ul>
-          <a href="#cta" class="btn-primary" style="display: block; text-align: center;">Request a memo</a>
-        </div>
-        <div class="pricing-card reveal reveal-delay-2">
-          <div class="coming-soon">Later</div>
+          <a class="btn" href="#request">Request a memo</a>
+        </article>
+        <article>
+          <p class="tier later">Later</p>
           <h3>Inside the fund</h3>
-          <div class="price">Same checks</div>
-          <div class="price-sub">On every inbound trial, in your cloud</div>
+          <p class="price">Same checks</p>
+          <p class="price-sub">On every inbound trial, in your cloud</p>
           <ul>
             <li>Your ticker list stays on your side</li>
             <li>Re-run when a past week is revised</li>
             <li>No upload of the alpha model</li>
             <li>Additivity against your book only after Continue</li>
           </ul>
-          <a href="#cta" class="btn-secondary" style="display: block; text-align: center;">Talk to us</a>
+          <a class="btn btn-ghost" href="#request">Talk to us</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap block" id="landscape">
+      <p class="kicker"><span>07</span> Landscape</p>
+      <h2>The labs start after the file is clean.</h2>
+      <p class="lede">Discovery catalogs list the dataset. Research platforms backtest a ticker-mapped panel. The trial usually dies while that panel is still being built.</p>
+      <table class="jobs">
+        <thead>
+          <tr>
+            <th>Job</th>
+            <th>Who already does it</th>
+            <th>What we do</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Job">Find a dataset</td>
+            <td data-label="Who already does it">Neudata, Eagle Alpha</td>
+            <td class="ours" data-label="What we do">We start after you have a file</td>
+          </tr>
+          <tr>
+            <td data-label="Job">Backtest a mapped panel</td>
+            <td data-label="Who already does it">AltHub, Exabel, Neuravest, CloudQuant</td>
+            <td class="ours" data-label="What we do">We score the file those labs assume</td>
+          </tr>
+          <tr>
+            <td data-label="Job">Scrape and structure the web</td>
+            <td data-label="Who already does it">Bright Data, Oxylabs, Kadoa</td>
+            <td class="ours" data-label="What we do">We do not collect the trial for you</td>
+          </tr>
+          <tr>
+            <td data-label="Job">Read filings and transcripts</td>
+            <td data-label="Who already does it">AlphaSense, Hebbia, internal tools</td>
+            <td class="ours" data-label="What we do">We do not write the research note</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="wrap block" id="request">
+      <p class="kicker"><span>08</span> Design partners</p>
+      <h2>Have a trial that is stalling?</h2>
+      <p class="lede">Send a note. The first memos are design partnerships on a live file, not a badge for a backtest.</p>
+      <form id="waitlist-form" action="https://formspree.io/f/meewpedw" method="POST">
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Work email</label>
+            <input id="email" name="email" type="email" placeholder="you@company.com" autocomplete="email" required>
+          </div>
+          <button class="btn" type="submit">Request a memo</button>
         </div>
-      </div>
-    </div>
-  </section>
+        <p class="form-note" id="form-message" role="status"></p>
+      </form>
+    </section>
+  </main>
 
-  <div class="glow-line"></div>
-
-  <!-- COMPETITIVE -->
-  <section>
-    <div class="section-inner">
-      <div class="section-label reveal">Landscape</div>
-      <h2 class="section-title reveal">The labs start after the file is clean.</h2>
-      <p class="section-desc reveal">
-        Discovery catalogs list the dataset. Research platforms backtest a ticker-mapped panel. The trial usually dies while that panel is still being built.
-      </p>
-
-      <div class="competitive-table reveal">
-        <table>
-          <thead>
-            <tr>
-              <th>Job</th>
-              <th>Who already does it</th>
-              <th>What we do</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Find a dataset</td>
-              <td>Neudata, Eagle Alpha</td>
-              <td class="highlight">We start after you have a file</td>
-            </tr>
-            <tr>
-              <td>Backtest a mapped panel</td>
-              <td>AltHub, Exabel, Neuravest, CloudQuant</td>
-              <td class="highlight">We score the file those labs assume</td>
-            </tr>
-            <tr>
-              <td>Scrape and structure the web</td>
-              <td>Bright Data, Oxylabs, Kadoa</td>
-              <td class="highlight">We do not collect the trial for you</td>
-            </tr>
-            <tr>
-              <td>Read filings and transcripts</td>
-              <td>AlphaSense, Hebbia, internal tools</td>
-              <td class="highlight">We do not write the research note</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <div class="glow-line"></div>
-
-  <!-- CTA -->
-  <section id="cta" class="cta-section">
-    <div class="section-inner">
-      <div class="section-label reveal">Design partners</div>
-      <h2 class="section-title reveal">Have a trial that is stalling?</h2>
-      <p class="section-desc reveal" style="margin: 0 auto 2.5rem;">
-        Send a note. The first memos are design partnerships on a live file, not a badge for a backtest.
-      </p>
-      <div class="reveal">
-        <form id="waitlist-form" action="https://formspree.io/f/meewpedw" method="POST" style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; max-width: 500px; margin: 0 auto;">
-          <input type="email" placeholder="you@company.com" required
-            style="flex: 1; min-width: 250px; padding: 0.85rem 1.2rem; background: rgba(15, 23, 42, 0.45); border: 1px solid rgba(56, 189, 248, 0.1); border-radius: 12px; color: var(--text); font-size: 1rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
-            onfocus="this.style.borderColor='rgba(56,189,248,0.4)'"
-            onblur="this.style.borderColor='var(--border)'">
-          <button type="submit" class="btn-primary">Request a memo</button>
-        </form>
-        <p id="form-message" style="margin-top: 1rem; font-size: 0.85rem; color: var(--green); display: none;"></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
   <footer>
-    <div class="footer-inner">
-      <p>&copy; 2026 All Data Labs. Score the trial.</p>
+    <div class="wrap foot">
+      <p><strong>All Data Labs</strong> · Score the trial.</p>
+      <p>© 2026</p>
     </div>
   </footer>
 
-  <script>
-    // ============ NAV SCROLL ============
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 50);
-    });
-
-    // ============ REVEAL ON SCROLL ============
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    reveals.forEach(el => observer.observe(el));
-
-    // ============ FORM ============
-    document.getElementById('waitlist-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const msg = document.getElementById('form-message');
-      const btn = form.querySelector('button');
-      const email = form.querySelector('input[type="email"]').value;
-
-      btn.textContent = 'Sending...';
-      btn.disabled = true;
-
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-        if (res.ok) {
-          msg.textContent = "Received. We'll reply about the trial.";
-          msg.style.display = 'block';
-          form.reset();
-        } else {
-          msg.textContent = "Something went wrong. Try again.";
-          msg.style.color = 'var(--red)';
-          msg.style.display = 'block';
-        }
-      } catch {
-        msg.textContent = "Network error. Try again.";
-        msg.style.color = 'var(--red)';
-        msg.style.display = 'block';
-      }
-      btn.textContent = 'Request a memo';
-      btn.disabled = false;
-    });
-
-    // ============ SMOOTH SCROLL ============
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-
-    // ============ COUNTER ANIMATION ============
-    const counterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.querySelectorAll('.stat-value[data-target]').forEach(el => {
-            const target = parseFloat(el.dataset.target);
-            const suffix = el.dataset.suffix || '';
-            const prefix = el.dataset.prefix || '';
-            let current = 0;
-            const increment = target / 60;
-            const timer = setInterval(() => {
-              current += increment;
-              if (current >= target) {
-                current = target;
-                clearInterval(timer);
-              }
-              el.textContent = prefix + (Number.isInteger(target) ? Math.floor(current) : current.toFixed(target < 10 ? 2 : 0)) + suffix;
-            }, 16);
-          });
-          counterObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.stats-row').forEach(el => counterObserver.observe(el));
-  </script>
+  <script src="site.js"></script>
 </body>
 </html>
