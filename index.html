@@ -4,9 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090908">
+  <script>
+    try {
+      if (localStorage.getItem("adl-theme") === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    } catch (e) {}
+  </script>
   <meta name="description" content="All Data Labs scores a trial file and returns a memo you can rerun: Kill, Renegotiate, or Continue. Every figure ties back to the rows.">
   <title>All Data Labs | Trial signal memo</title>
-  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="icon" href="logo-dark.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,7 +31,8 @@
   <header class="site-header">
     <div class="wrap bar">
       <a class="brand" href="#top">
-        <img src="logo.png" alt="" width="32" height="32">
+        <img class="logo-for-dark" src="logo-dark.png" alt="" width="34" height="34">
+        <img class="logo-for-light" src="logo-light.png" alt="" width="34" height="34">
         <span>All Data Labs</span>
       </a>
       <ul class="nav-links">
@@ -33,8 +41,11 @@
         <li><a href="#verdicts">Verdicts</a></li>
         <li><a href="#pricing">Pricing</a></li>
       </ul>
-      <a class="btn btn-small" href="#request">Request a memo</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <div class="bar-actions">
+        <button class="theme-toggle" type="button" aria-pressed="false">Light</button>
+        <a class="btn btn-small" href="#request">Request a memo</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      </div>
     </div>
   </header>
 

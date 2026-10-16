@@ -1,5 +1,6 @@
 (function () {
   const header = document.querySelector(".site-header");
+  const themeButton = document.querySelector(".theme-toggle");
   const toggle = document.querySelector(".nav-toggle");
   const panel = document.getElementById("menu");
   const progress = document.getElementById("progress");
@@ -16,6 +17,27 @@
     toggle.textContent = open ? "Close" : "Menu";
     document.body.style.overflow = open ? "hidden" : "";
   }
+
+  function applyTheme(theme, persist) {
+    const light = theme === "light";
+    document.documentElement.setAttribute("data-theme", light ? "light" : "dark");
+    themeButton.textContent = light ? "Dark" : "Light";
+    themeButton.setAttribute("aria-pressed", light ? "true" : "false");
+    themeButton.setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+    const color = document.querySelector('meta[name="theme-color"]');
+    if (color) color.setAttribute("content", light ? "#f4f0e6" : "#090908");
+    const icon = document.querySelector('link[rel="icon"]');
+    if (icon) icon.setAttribute("href", light ? "logo-light.png" : "logo-dark.png");
+    if (persist) {
+      try { localStorage.setItem("adl-theme", light ? "light" : "dark"); } catch (e) {}
+    }
+  }
+
+  applyTheme(document.documentElement.getAttribute("data-theme") || "dark", false);
+  themeButton.addEventListener("click", function () {
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(current === "light" ? "dark" : "light", true);
+  });
 
   toggle.addEventListener("click", function () {
     setMenu(panel.hidden);
